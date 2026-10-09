@@ -1,0 +1,1699 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Laboratorio Virtual de Interpretación Cualitativa</title>
+<style>
+  /* ============ DESIGN TOKENS ============ */
+  :root{
+    --black:#0a0a0a;
+    --gray-900:#1a1a1a;
+    --gray-700:#3d3d3d;
+    --gray-500:#6b6b6b;
+    --gray-400:#9a9a9a;
+    --gray-300:#d4d4d4;
+    --gray-200:#e8e8e8;
+    --gray-100:#f2f2f2;
+    --gray-50:#fafafa;
+    --white:#ffffff;
+
+    --blue:#0055ff;
+    --blue-hover:#0044cc;
+    --blue-light:#e6efff;
+
+    --red:#e11d1d;
+    --red-hover:#b91414;
+    --red-light:#fee8e8;
+
+    --radius-sm:6px;
+    --radius:12px;
+    --radius-lg:16px;
+
+    --font-base:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    --font-mono:'SF Mono',Monaco,Consolas,monospace;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box}
+
+  html{font-size:17px}
+
+  body{
+    font-family:var(--font-base);
+    font-size:1rem;
+    line-height:1.6;
+    color:var(--gray-900);
+    background:var(--white);
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+
+  /* ============ HEADER ============ */
+  .app-header{
+    border-bottom:1px solid var(--gray-200);
+    padding:2.5rem 2rem 2rem;
+    background:var(--white);
+  }
+  .header-inner{max-width:1100px;margin:0 auto}
+  .app-header h1{
+    font-size:1.75rem;
+    font-weight:700;
+    letter-spacing:-0.025em;
+    color:var(--black);
+    line-height:1.2;
+  }
+  .app-header p{
+    font-size:1rem;
+    color:var(--gray-500);
+    margin-top:.6rem;
+    max-width:720px;
+    line-height:1.55;
+  }
+
+  /* ============ MAIN ============ */
+  main{
+    max-width:1100px;
+    margin:0 auto;
+    padding:2.5rem 2rem 5rem;
+  }
+
+  /* ============ WELCOME ============ */
+  .welcome{
+    border:1px solid var(--gray-200);
+    border-radius:var(--radius-lg);
+    padding:2rem;
+    margin-bottom:2.5rem;
+    background:var(--gray-50);
+  }
+  .welcome h2{
+    font-size:1.15rem;
+    font-weight:700;
+    color:var(--black);
+    margin-bottom:1rem;
+    letter-spacing:-0.01em;
+  }
+  .welcome ol{
+    list-style:none;
+    counter-reset:step;
+    display:flex;
+    flex-direction:column;
+    gap:.6rem;
+  }
+  .welcome li{
+    counter-increment:step;
+    font-size:.98rem;
+    color:var(--gray-700);
+    padding-left:2rem;
+    position:relative;
+    line-height:1.55;
+  }
+  .welcome li::before{
+    content:counter(step);
+    position:absolute;
+    left:0;
+    top:.15rem;
+    width:1.4rem;
+    height:1.4rem;
+    background:var(--black);
+    color:var(--white);
+    border-radius:50%;
+    font-size:.75rem;
+    font-weight:700;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .welcome li strong{color:var(--black);font-weight:600}
+
+  /* ============ SECTION HEADERS ============ */
+  .section-title{
+    font-size:1.4rem;
+    font-weight:700;
+    color:var(--black);
+    letter-spacing:-0.02em;
+    margin-bottom:.4rem;
+  }
+  .section-sub{
+    font-size:1rem;
+    color:var(--gray-500);
+    margin-bottom:1.8rem;
+    max-width:640px;
+  }
+
+  /* ============ THEORY GRID ============ */
+  .theory-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+    gap:1rem;
+  }
+  .theory-tile{
+    border:1px solid var(--gray-200);
+    border-radius:var(--radius);
+    padding:1.6rem;
+    background:var(--white);
+    cursor:pointer;
+    transition:border-color .15s,transform .15s,box-shadow .15s;
+    display:flex;
+    flex-direction:column;
+    gap:.6rem;
+    position:relative;
+    overflow:hidden;
+  }
+  .theory-tile::after{
+    content:'';
+    position:absolute;
+    top:0;left:0;right:0;
+    height:3px;
+    background:var(--blue);
+    transform:scaleX(0);
+    transform-origin:left;
+    transition:transform .25s;
+  }
+  .theory-tile:hover{
+    border-color:var(--gray-300);
+    transform:translateY(-2px);
+    box-shadow:0 8px 24px rgba(0,0,0,.06);
+  }
+  .theory-tile:hover::after{transform:scaleX(1)}
+  .theory-tile .icon{
+    font-size:1.6rem;
+    line-height:1;
+    margin-bottom:.2rem;
+    filter:grayscale(1);
+    opacity:.85;
+  }
+  .theory-tile h3{
+    font-size:1.05rem;
+    font-weight:700;
+    color:var(--black);
+    letter-spacing:-0.01em;
+    line-height:1.3;
+  }
+  .theory-tile p{
+    font-size:.9rem;
+    color:var(--gray-500);
+    line-height:1.55;
+    flex-grow:1;
+  }
+  .theory-tile .ref{
+    font-size:.8rem;
+    color:var(--gray-400);
+    font-style:italic;
+    border-top:1px solid var(--gray-200);
+    padding-top:.8rem;
+    margin-top:.4rem;
+    line-height:1.45;
+  }
+
+  /* ============ WIZARD ============ */
+  .wizard{
+    display:grid;
+    grid-template-columns:280px 1fr;
+    gap:2.5rem;
+    align-items:start;
+  }
+  @media(max-width:900px){
+    .wizard{grid-template-columns:1fr;gap:1.5rem}
+  }
+
+  .sidebar{
+    position:sticky;
+    top:2rem;
+  }
+  .sidebar .theory-badge{
+    display:flex;
+    align-items:center;
+    gap:.6rem;
+    font-size:1rem;
+    font-weight:700;
+    color:var(--black);
+    padding-bottom:1rem;
+    border-bottom:1px solid var(--gray-200);
+    margin-bottom:1.2rem;
+    letter-spacing:-0.01em;
+  }
+  .sidebar .theory-badge .icon{
+    font-size:1.3rem;
+    filter:grayscale(1);
+  }
+  .step-list{
+    list-style:none;
+    display:flex;
+    flex-direction:column;
+    gap:.15rem;
+  }
+  .step-list li{
+    display:flex;
+    align-items:center;
+    gap:.75rem;
+    font-size:.92rem;
+    padding:.7rem .9rem;
+    border-radius:var(--radius-sm);
+    cursor:pointer;
+    color:var(--gray-500);
+    transition:background .15s,color .15s;
+    line-height:1.35;
+  }
+  .step-list li:hover{background:var(--gray-50);color:var(--gray-900)}
+  .step-list li.active{
+    background:var(--black);
+    color:var(--white);
+    font-weight:600;
+  }
+  .step-list li.active .num{background:var(--white);color:var(--black)}
+  .step-list li.done{color:var(--gray-900)}
+  .step-list li.done .num{background:var(--blue);color:var(--white)}
+  .step-list li .num{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:24px;
+    height:24px;
+    border-radius:50%;
+    background:var(--gray-100);
+    color:var(--gray-700);
+    font-size:.75rem;
+    font-weight:700;
+    flex-shrink:0;
+    transition:background .15s,color .15s;
+  }
+  .sidebar-actions{
+    margin-top:1.5rem;
+    display:flex;
+    flex-direction:column;
+    gap:.5rem;
+  }
+  .btn-ghost{
+    border:1px solid var(--gray-200);
+    background:var(--white);
+    color:var(--gray-700);
+    padding:.65rem 1rem;
+    border-radius:var(--radius-sm);
+    cursor:pointer;
+    font-size:.88rem;
+    font-family:inherit;
+    font-weight:500;
+    text-align:center;
+    transition:border-color .15s,color .15s,background .15s;
+  }
+  .btn-ghost:hover{border-color:var(--gray-400);color:var(--black);background:var(--gray-50)}
+
+  /* ============ PANEL ============ */
+  .panel{
+    min-width:0;
+  }
+  .progress-wrap{margin-bottom:2rem}
+  .progress-bar{
+    height:4px;
+    background:var(--gray-200);
+    border-radius:2px;
+    overflow:hidden;
+  }
+  .progress-fill{
+    height:100%;
+    background:var(--black);
+    border-radius:2px;
+    transition:width .35s ease;
+    width:0;
+  }
+  .progress-label{
+    font-size:.82rem;
+    color:var(--gray-500);
+    margin-top:.7rem;
+    display:flex;
+    justify-content:space-between;
+    font-weight:500;
+    letter-spacing:.01em;
+  }
+
+  .step-title{
+    font-size:1.75rem;
+    font-weight:700;
+    color:var(--black);
+    letter-spacing:-0.025em;
+    line-height:1.2;
+    margin-bottom:.6rem;
+  }
+  .step-desc{
+    font-size:1.05rem;
+    color:var(--gray-700);
+    line-height:1.65;
+    margin-bottom:2rem;
+  }
+
+  .step-block{
+    border:1px solid var(--gray-200);
+    border-radius:var(--radius);
+    padding:1.4rem 1.5rem;
+    margin-bottom:1rem;
+    background:var(--white);
+  }
+  .step-block h4{
+    font-size:.78rem;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    color:var(--gray-500);
+    font-weight:700;
+    margin-bottom:.8rem;
+    display:flex;
+    align-items:center;
+    gap:.5rem;
+  }
+  .step-block ul{
+    list-style:none;
+    display:flex;
+    flex-direction:column;
+    gap:.5rem;
+  }
+  .step-block ul li{
+    position:relative;
+    padding-left:1.4rem;
+    font-size:1rem;
+    color:var(--gray-900);
+    line-height:1.55;
+  }
+  .step-block ul li::before{
+    content:'';
+    position:absolute;
+    left:0;
+    top:.6rem;
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    background:var(--blue);
+  }
+  .step-block p{
+    font-size:1rem;
+    color:var(--gray-900);
+    line-height:1.6;
+  }
+  .step-block.example{border-left:3px solid var(--blue)}
+  .step-block.example h4{color:var(--blue)}
+  .step-block.tip{border-left:3px solid var(--red)}
+  .step-block.tip h4{color:var(--red)}
+  .step-block.ref{
+    background:var(--gray-50);
+    border:1px solid var(--gray-200);
+  }
+  .step-block.ref em{
+    font-style:italic;
+    font-size:.92rem;
+    color:var(--gray-700);
+    line-height:1.55;
+    display:block;
+  }
+
+  /* ============ NOTES ============ */
+  .notes-label{
+    display:block;
+    font-size:.95rem;
+    font-weight:600;
+    color:var(--black);
+    margin:1.8rem 0 .6rem;
+    letter-spacing:-0.005em;
+  }
+  textarea.notes{
+    width:100%;
+    min-height:180px;
+    padding:1.1rem 1.2rem;
+    border:1px solid var(--gray-300);
+    border-radius:var(--radius);
+    font-family:inherit;
+    font-size:1rem;
+    line-height:1.6;
+    color:var(--gray-900);
+    resize:vertical;
+    transition:border-color .15s,box-shadow .15s;
+    background:var(--white);
+  }
+  textarea.notes::placeholder{color:var(--gray-400)}
+  textarea.notes:focus{
+    outline:none;
+    border-color:var(--blue);
+    box-shadow:0 0 0 3px var(--blue-light);
+  }
+
+  /* ============ BUTTONS ============ */
+  .nav{
+    display:flex;
+    justify-content:space-between;
+    gap:1rem;
+    margin-top:1.8rem;
+    flex-wrap:wrap;
+  }
+  .btn{
+    padding:.85rem 1.6rem;
+    border:none;
+    border-radius:var(--radius-sm);
+    font-size:.95rem;
+    font-weight:600;
+    cursor:pointer;
+    font-family:inherit;
+    transition:background .15s,color .15s,border-color .15s,transform .05s;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:.5rem;
+    letter-spacing:-0.005em;
+    line-height:1;
+  }
+  .btn:active{transform:scale(.985)}
+  .btn-primary{background:var(--black);color:var(--white)}
+  .btn-primary:hover{background:var(--gray-700)}
+  .btn-accent{background:var(--red);color:var(--white)}
+  .btn-accent:hover{background:var(--red-hover)}
+  .btn-blue{background:var(--blue);color:var(--white)}
+  .btn-blue:hover{background:var(--blue-hover)}
+  .btn-ghost2{
+    background:transparent;
+    color:var(--gray-700);
+    border:1px solid var(--gray-300);
+  }
+  .btn-ghost2:hover{border-color:var(--black);color:var(--black);background:var(--gray-50)}
+  .btn:disabled{opacity:.35;cursor:not-allowed}
+
+  /* ============ REPORT ============ */
+  .report-header{
+    border-bottom:1px solid var(--gray-200);
+    padding-bottom:1.5rem;
+    margin-bottom:2rem;
+  }
+  .report-header h2{
+    font-size:1.6rem;
+    font-weight:700;
+    color:var(--black);
+    letter-spacing:-0.025em;
+    margin-bottom:.5rem;
+    line-height:1.25;
+  }
+  .report-header p{
+    font-size:.95rem;
+    color:var(--gray-500);
+    font-weight:500;
+  }
+  .report-section{
+    border:1px solid var(--gray-200);
+    border-radius:var(--radius);
+    padding:1.6rem 1.75rem;
+    margin-bottom:1rem;
+    background:var(--white);
+  }
+  .report-section h3{
+    font-size:1.1rem;
+    font-weight:700;
+    color:var(--black);
+    letter-spacing:-0.01em;
+    margin-bottom:.9rem;
+    line-height:1.35;
+  }
+  .report-section .user-text{
+    font-size:1rem;
+    line-height:1.7;
+    color:var(--gray-900);
+    white-space:pre-wrap;
+    word-wrap:break-word;
+    padding:1rem 1.2rem;
+    background:var(--gray-50);
+    border-radius:var(--radius-sm);
+    margin-bottom:1rem;
+    min-height:2.5rem;
+  }
+  .report-section .user-text.empty{
+    color:var(--gray-400);
+    font-style:italic;
+  }
+  .report-section .ref-line{
+    font-size:.88rem;
+    color:var(--gray-500);
+    font-style:italic;
+    line-height:1.55;
+    border-top:1px solid var(--gray-200);
+    padding-top:.9rem;
+  }
+  .report-empty-banner{
+    background:var(--red-light);
+    border-left:3px solid var(--red);
+    padding:1.1rem 1.3rem;
+    border-radius:var(--radius-sm);
+    font-size:.95rem;
+    margin-bottom:1.5rem;
+    color:var(--gray-900);
+    line-height:1.55;
+  }
+
+  .report-actions{
+    display:flex;
+    gap:.75rem;
+    flex-wrap:wrap;
+    margin-top:2rem;
+    padding-top:2rem;
+    border-top:1px solid var(--gray-200);
+  }
+
+  /* ============ UTILITIES ============ */
+  .hidden{display:none !important}
+
+  /* ============ RESPONSIVE ============ */
+  @media(max-width:640px){
+    html{font-size:16px}
+    .app-header{padding:1.8rem 1.2rem 1.5rem}
+    .app-header h1{font-size:1.35rem}
+    main{padding:1.75rem 1.2rem 4rem}
+    .step-title{font-size:1.35rem}
+    .section-title{font-size:1.15rem}
+    .panel{padding:0}
+    .step-block{padding:1.15rem 1.15rem}
+    .report-section{padding:1.3rem 1.2rem}
+    .report-header h2{font-size:1.3rem}
+    .welcome{padding:1.4rem}
+  }
+
+  /* ============ PRINT ============ */
+  @media print{
+    .app-header,.report-actions,.sidebar,.nav{display:none !important}
+    body{background:#fff}
+    main{padding:0;max-width:100%}
+    .report-section{break-inside:avoid;box-shadow:none;border:1px solid #ccc}
+    .report-header{border:none}
+  }
+</style>
+</head>
+<body>
+
+<header class="app-header">
+  <div class="header-inner">
+    <h1>Laboratorio Virtual de Interpretación Cualitativa</h1>
+    <p>Elige una teoría y recorre paso a paso la construcción de tu análisis interpretativo, con preguntas orientadoras, ejemplos, advertencias metodológicas y referencias APA en cada etapa.</p>
+  </div>
+</header>
+
+<main>
+
+  <!-- ================= SELECTION ================= -->
+  <section id="selectionView">
+    <div class="welcome">
+      <h2>Cómo funciona</h2>
+      <ol>
+        <li><strong>Elige un marco teórico</strong> entre las diez tradiciones disponibles.</li>
+        <li><strong>Recorre los siete pasos guiados</strong> de esa tradición, cada uno con preguntas, ejemplos y referencias.</li>
+        <li><strong>Escribe tus notas</strong> en cada paso. Se guardan automáticamente.</li>
+        <li><strong>Genera el reporte final</strong> con todo tu trabajo integrado.</li>
+      </ol>
+    </div>
+
+    <h2 class="section-title">Elige tu marco teórico-metodológico</h2>
+    <p class="section-sub">Cada teoría define una forma distinta de preguntar, recolectar, analizar e interpretar. Elige la que mejor dialoga con tu fenómeno.</p>
+    <div class="theory-grid" id="theoryGrid"></div>
+  </section>
+
+  <!-- ================= WIZARD ================= -->
+  <section id="wizardView" class="hidden">
+    <div class="wizard">
+      <aside class="sidebar">
+        <div class="theory-badge">
+          <span class="icon" id="sbIcon">◆</span>
+          <span id="sbName">Teoría</span>
+        </div>
+        <ol class="step-list" id="stepList"></ol>
+        <div class="sidebar-actions">
+          <button class="btn-ghost" onclick="changeTheory()">Cambiar de teoría</button>
+          <button class="btn-ghost" onclick="resetAll()">Reiniciar laboratorio</button>
+        </div>
+      </aside>
+
+      <div class="panel">
+        <div class="progress-wrap">
+          <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+          <div class="progress-label">
+            <span id="progressStep">Paso 1 de 7</span>
+            <span id="progressPct">0%</span>
+          </div>
+        </div>
+
+        <h2 class="step-title" id="stepTitle">—</h2>
+        <p class="step-desc" id="stepDesc">—</p>
+
+        <div class="step-block">
+          <h4>Preguntas orientadoras</h4>
+          <ul id="stepQuestions"></ul>
+        </div>
+
+        <div class="step-block example">
+          <h4>Ejemplo aplicado</h4>
+          <p id="stepExample"></p>
+        </div>
+
+        <div class="step-block tip">
+          <h4>Advertencia metodológica</h4>
+          <p id="stepTip"></p>
+        </div>
+
+        <div class="step-block ref">
+          <h4>Referencia de apoyo</h4>
+          <em id="stepRef"></em>
+        </div>
+
+        <label class="notes-label" for="notesArea">Tu elaboración para este paso</label>
+        <textarea id="notesArea" class="notes" placeholder="Escribe aquí tus decisiones, borradores, reflexiones..."></textarea>
+
+        <div class="nav">
+          <button class="btn btn-ghost2" id="btnPrev" onclick="prevStep()">Anterior</button>
+          <button class="btn btn-primary" id="btnNext" onclick="nextStep()">Siguiente</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= REPORT ================= -->
+  <section id="reportView" class="hidden">
+    <div class="report-header">
+      <h2>Reporte interpretativo preliminar</h2>
+      <p id="reportMeta">—</p>
+    </div>
+    <div id="reportBody"></div>
+    <div class="report-actions">
+      <button class="btn btn-primary" onclick="window.print()">Imprimir o guardar PDF</button>
+      <button class="btn btn-blue" onclick="copyReport()">Copiar reporte</button>
+      <button class="btn btn-ghost2" onclick="backToWizard()">Volver al laboratorio</button>
+      <button class="btn btn-ghost2" onclick="resetAll()">Nuevo laboratorio</button>
+    </div>
+  </section>
+
+</main>
+
+<script>
+/* ============================================================
+   BASE TEÓRICA
+   ============================================================ */
+const THEORIES = {
+  fenomenologia: {
+    id: 'fenomenologia', icon: '◆', name: 'Fenomenología',
+    focus: `Describir la esencia de una experiencia vivida, suspendiendo los prejuicios del investigador.`,
+    ref: `Moustakas, C. (1994). Phenomenological research methods. Sage.`,
+    steps: [
+      {
+        title: `Delimitar la experiencia vivida`,
+        desc: `Identifica una experiencia humana concreta tal como es vivida por los sujetos. La fenomenología no pregunta por causas ni por frecuencias: pregunta por el "cómo" de la vivencia.`,
+        questions: [`¿Qué experiencia vivida quieres comprender?`, `¿Quiénes la han vivido y pueden relatarla?`, `¿Por qué es un fenómeno significativo y no trivial?`],
+        example: `"La experiencia de volver a la escuela después de los 50 años" o "el primer año de duelo tras la pérdida de un hijo".`,
+        tip: `Evita preguntas causales ("¿por qué ocurre X?") y comparativas; la fenomenología busca la esencia, no la explicación.`,
+        ref: `Husserl, E. (1982). Ideas pertaining to a pure phenomenology (F. Kersten, Trans.). Kluwer. (Obra original publicada en 1913).`
+      },
+      {
+        title: `Formular la pregunta fenomenológica`,
+        desc: `La pregunta debe apuntar al significado de la experiencia. Suele iniciar con "¿Cuál es el significado de...?" o "¿Cómo se experimenta...?".`,
+        questions: [`¿Cómo formularías tu pregunta en términos de significado?`, `¿Qué esperas describir al final: la esencia del fenómeno?`],
+        example: `"¿Cuál es el significado de la experiencia de ser cuidador primario de un familiar con Alzheimer?"`,
+        tip: `Una buena pregunta fenomenológica es abierta, no directiva y apunta a la vivencia, no a teorías previas.`,
+        ref: `van Manen, M. (1990). Researching lived experience. State University of New York Press.`
+      },
+      {
+        title: `Definir conceptos clave y practicar la epoché`,
+        desc: `Antes de recolectar datos, explicita tus presupuestos y suspende juicios (epoché). Define intencionalidad, mundo de vida, noesis/noema y esencia.`,
+        questions: [`¿Qué sabes o crees saber sobre este fenómeno? (escríbelo y luego suspéndelo)`, `¿Cómo definirías "esencia" en tu estudio?`, `¿Qué es el "mundo de vida" de tus participantes?`],
+        example: `Un investigador sobre duelo escribe sus propias creencias y las deja entre paréntesis para no contaminar la descripción.`,
+        tip: `La epoché no se logra de una vez: es un ejercicio continuo de vigilancia reflexiva.`,
+        ref: `Moustakas, C. (1994). Phenomenological research methods. Sage.`
+      },
+      {
+        title: `Diseñar la recolección de datos`,
+        desc: `Se usan entrevistas fenomenológicas en profundidad y relatos de experiencia. El muestreo es intencional y reducido (5 a 10 participantes suele ser suficiente).`,
+        questions: [`¿Qué tipo de entrevista usarás y por qué?`, `¿Cómo garantizarás que fluyan descripciones y no opiniones?`, `¿Cuántos participantes y bajo qué criterios?`],
+        example: `Entrevistas de 60–90 min con pregunta inicial amplia: "Cuéntame cómo ha sido para ti...".`,
+        tip: `Evita preguntar "¿por qué?" en la entrevista fenomenológica; pide descripciones concretas ("¿puedes darme un ejemplo de un momento en que...?").`,
+        ref: `Colaizzi, P. F. (1978). Psychological research as the phenomenologist views it. In R. Valle & M. King (Eds.), Existential-phenomenological alternatives for psychology (pp. 48–71). Oxford University Press.`
+      },
+      {
+        title: `Analizar los datos: unidades de significado`,
+        desc: `Lecturas completas, extracción de horizontes, unidades de significado, clusters temáticos, descripción textural (qué) y estructural (cómo).`,
+        questions: [`¿Qué horizontes emergen de cada relato?`, `¿Qué unidades de significado se repiten o se distinguen?`, `¿Cómo articulas lo textural y lo estructural?`],
+        example: `Del relato "sentí que el tiempo se detenía" surge la unidad "detención temporal del duelo".`,
+        tip: `No forces categorías previas: deja que las unidades emerjan de la voz de los participantes.`,
+        ref: `Moustakas, C. (1994). Phenomenological research methods. Sage.`
+      },
+      {
+        title: `Interpretar la esencia del fenómeno`,
+        desc: `Se integra una síntesis: la esencia del fenómeno. La descripción es vívida, densa y anclada al lenguaje de los participantes.`,
+        questions: [`¿Cuál es la esencia del fenómeno en una o dos frases?`, `¿Qué describe mejor la textura y la estructura?`],
+        example: `"La esencia del duelo materno en pandemia es habitar una ausencia sin rituales, sosteniendo la vida cotidiana en un tiempo detenido."`,
+        tip: `La esencia no es una generalización estadística: es una descripción profunda de la vivencia.`,
+        ref: `van Manen, M. (1990). Researching lived experience. State University of New York Press.`
+      },
+      {
+        title: `Rigor, reflexividad y reporte`,
+        desc: `Documenta la epoché, haz member checking, usa descripción densa. El reporte se escribe en primera persona y con lenguaje vívido.`,
+        questions: [`¿Cómo documentarás tu epoché?`, `¿A quiénes devolverás los hallazgos?`, `¿Qué criterios de rigor adoptarás?`],
+        example: `Un apartado de "reflexividad del investigador" al inicio del reporte.`,
+        tip: `Criterios de Lincoln y Guba: credibilidad, transferibilidad, dependencia y confirmabilidad.`,
+        ref: `Lincoln, Y. S., & Guba, E. G. (1985). Naturalistic inquiry. Sage.`
+      }
+    ]
+  },
+
+  grounded: {
+    id: 'grounded', icon: '◆', name: 'Teoría Fundamentada',
+    focus: `Generar teoría sustantiva desde los datos mediante codificación y comparación constante.`,
+    ref: `Strauss, A., & Corbin, J. (2002). Bases de la investigación cualitativa. Editorial Universidad de Antioquia.`,
+    steps: [
+      {
+        title: `Delimitar el área sustantiva y el proceso social`,
+        desc: `La TF no parte de teoría previa: parte de un área sustantiva donde ocurre un proceso social relevante.`,
+        questions: [`¿Qué proceso social te interesa comprender?`, `¿Dónde y entre quiénes ocurre?`, `¿Qué vacío teórico justifica estudiarlo?`],
+        example: `"El proceso mediante el cual enfermeras noveles construyen su identidad profesional en un hospital público".`,
+        tip: `Evita preguntas que ya tengan respuesta en la literatura; busca procesos poco teorizados.`,
+        ref: `Glaser, B. G., & Strauss, A. L. (1967). The discovery of grounded theory. Aldine.`
+      },
+      {
+        title: `Formular la pregunta generativa`,
+        desc: `Preguntas típicas: "¿Qué está pasando aquí?" y "¿Cómo los actores gestionan X?".`,
+        questions: [`¿Cómo formularías una pregunta generativa?`, `¿Qué acción o proceso quieres explicar?`],
+        example: `"¿Cómo construyen las enfermeras noveles su identidad profesional durante su primer año?"`,
+        tip: `La pregunta puede evolucionar durante el estudio: eso es parte del método.`,
+        ref: `Charmaz, K. (2014). Constructing grounded theory (2nd ed.). Sage.`
+      },
+      {
+        title: `Conceptos sensibilizadores y muestreo teórico`,
+        desc: `Se parte de conceptos sensibilizadores (no hipótesis). El muestreo es teórico: se decide a quién entrevistar según lo que emerge.`,
+        questions: [`¿Qué conceptos sensibilizadores usarás (no hipótesis)?`, `¿Cómo decidirás a quién entrevistar después de las primeras entrevistas?`],
+        example: `Se entrevista primero a enfermeras con 6 meses y luego se incorpora a tutoras para contrastar.`,
+        tip: `El muestreo teórico es iterativo: cada decisión depende del análisis previo.`,
+        ref: `Strauss, A., & Corbin, J. (2002). Bases de la investigación cualitativa. Editorial Universidad de Antioquia.`
+      },
+      {
+        title: `Recolectar y analizar de forma simultánea`,
+        desc: `Se recolecta (entrevistas, observación, documentos) mientras se codifica y se escriben memos.`,
+        questions: [`¿Qué técnicas usarás?`, `¿Cómo registrarás memos analíticos?`, `¿Cómo integrarás la comparación constante?`],
+        example: `Entrevista, transcripción, codificación abierta, memo, nueva entrevista orientada por el memo.`,
+        tip: `No esperes a terminar de recolectar para analizar: eso rompe el método.`,
+        ref: `Charmaz, K. (2014). Constructing grounded theory (2nd ed.). Sage.`
+      },
+      {
+        title: `Codificación abierta, axial y selectiva`,
+        desc: `Abierta: fragmentar y etiquetar. Axial: relacionar categorías y subcategorías. Selectiva: integrar en una categoría central.`,
+        questions: [`¿Qué códigos emergen línea por línea?`, `¿Qué relaciones hay entre categorías?`, `¿Cuál podría ser la categoría central?`],
+        example: `Categoría central: "Aprender a sostener la incertidumbre", con subcategorías de soporte, ensayo-error y modelaje.`,
+        tip: `Los memos y diagramas son herramientas clave para pasar de códigos a teoría.`,
+        ref: `Strauss, A., & Corbin, J. (2002). Bases de la investigación cualitativa. Editorial Universidad de Antioquia.`
+      },
+      {
+        title: `Saturar y construir la teoría sustantiva`,
+        desc: `Se saturan las categorías (no aparecen datos nuevos) y se articula un modelo teórico.`,
+        questions: [`¿Cómo sabrás que una categoría está saturada?`, `¿Cómo se relacionan las categorías en un modelo?`],
+        example: `Diagrama con la categoría central al centro y procesos condicionales alrededor.`,
+        tip: `La teoría sustantiva es local y contextual; no aspira a ser formal ni universal.`,
+        ref: `Glaser, B. G. (1978). Theoretical sensitivity. Sociology Press.`
+      },
+      {
+        title: `Rigor y reporte`,
+        desc: `Audit trail, triangulación, reflexividad. El reporte presenta la teoría con citas ilustrativas y un modelo gráfico.`,
+        questions: [`¿Cómo documentarás tu proceso?`, `¿Qué citas ilustrarán tus categorías?`],
+        example: `Reporte con apartados por categoría, cada uno con definición, propiedades y citas.`,
+        tip: `Evita sobreinterpretar: la teoría debe emerger de los datos, no imponerse.`,
+        ref: `Charmaz, K. (2014). Constructing grounded theory (2nd ed.). Sage.`
+      }
+    ]
+  },
+
+  etnografia: {
+    id: 'etnografia', icon: '◆', name: 'Etnografía',
+    focus: `Describir y analizar la cultura, prácticas y significados de un grupo social mediante inmersión prolongada.`,
+    ref: `Geertz, C. (1973). The interpretation of cultures. Basic Books.`,
+    steps: [
+      {
+        title: `Delimitar la comunidad y su cultura`,
+        desc: `Identifica un grupo social con prácticas y significados compartidos. La etnografía busca comprender desde dentro (perspectiva emic).`,
+        questions: [`¿Qué grupo, comunidad o escenario estudiarás?`, `¿Qué prácticas culturales te interesan?`, `¿Por qué es relevante comprenderlo desde dentro?`],
+        example: `Una comunidad de migrantes, un barrio, un servicio hospitalario o una escuela rural.`,
+        tip: `No es un "estudio de un lugar": es un estudio de la cultura que se produce en ese lugar.`,
+        ref: `Hammersley, M., & Atkinson, P. (2007). Ethnography: Principles in practice (3rd ed.). Routledge.`
+      },
+      {
+        title: `Formular la pregunta etnográfica`,
+        desc: `Preguntas típicas: "¿Cómo se organiza la vida cultural de...?" "¿Qué significados comparten...?".`,
+        questions: [`¿Cómo se organiza la vida cotidiana del grupo?`, `¿Qué rituales, símbolos y normas son centrales?`],
+        example: `"¿Cómo se construye el sentido de pertenencia en una comunidad de migrantes bolivianas en Buenos Aires?"`,
+        tip: `Las preguntas etnográficas son holísticas: abarcan el conjunto de la vida social del grupo.`,
+        ref: `Hammersley, M., & Atkinson, P. (2007). Ethnography: Principles in practice (3rd ed.). Routledge.`
+      },
+      {
+        title: `Conceptos clave: cultura y descripción densa`,
+        desc: `Cultura como sistema de significados; descripción densa como forma de escritura; extrañamiento y reflexividad como actitudes.`,
+        questions: [`¿Qué entiendes por cultura en tu estudio?`, `¿Cómo practicarás el extrañamiento de lo familiar?`],
+        example: `Observar como extraño lo que en tu propia cultura te parece obvio.`,
+        tip: `La reflexividad no es un apéndice: atraviesa todo el proceso etnográfico.`,
+        ref: `Geertz, C. (1973). The interpretation of cultures. Basic Books.`
+      },
+      {
+        title: `Inmersión prolongada y recolección`,
+        desc: `Observación participante extensa, entrevistas formales e informales, diario de campo, análisis de artefactos.`,
+        questions: [`¿Cuánto tiempo estarás en campo y con qué intensidad?`, `¿Cómo registrarás tus notas de campo?`, `¿Qué artefactos y documentos analizarás?`],
+        example: `Seis meses de presencia regular con notas diarias y entrevistas emergentes.`,
+        tip: `Las notas de campo deben separar descripción, interpretación y reflexión.`,
+        ref: `Emerson, R. M., Fretz, R. I., & Shaw, L. L. (2011). Writing ethnographic fieldnotes (2nd ed.). University of Chicago Press.`
+      },
+      {
+        title: `Análisis: codificación temática cultural`,
+        desc: `Notas de campo, codificación temática, identificación de patrones culturales, descripción densa.`,
+        questions: [`¿Qué patrones culturales emergen?`, `¿Cómo se relacionan los temas entre sí?`],
+        example: `El patrón "reciprocidad ritual" que organiza intercambios y jerarquías.`,
+        tip: `El análisis busca significados compartidos, no solo comportamientos observables.`,
+        ref: `Emerson, R. M., Fretz, R. I., & Shaw, L. L. (2011). Writing ethnographic fieldnotes (2nd ed.). University of Chicago Press.`
+      },
+      {
+        title: `Interpretar significados culturales`,
+        desc: `La interpretación conecta prácticas, símbolos y significados, mostrando cómo los actores producen y reproducen su mundo.`,
+        questions: [`¿Qué significados culturales organizan las prácticas observadas?`, `¿Cómo se relacionan con procesos más amplios?`],
+        example: `"La reciprocidad ritual no solo organiza intercambios: produce pertenencia y jerarquía."`,
+        tip: `Geertz insiste: no buscamos leyes, buscamos interpretaciones plausibles y densas.`,
+        ref: `Geertz, C. (1973). The interpretation of cultures. Basic Books.`
+      },
+      {
+        title: `Rigor, ética y reporte`,
+        desc: `Credibilidad (member checking), transferibilidad (descripción densa), dependencia (audit trail), confirmabilidad. Ética con la comunidad.`,
+        questions: [`¿Cómo devolverás los hallazgos al grupo?`, `¿Cómo protegerás la confidencialidad en contextos pequeños?`],
+        example: `Taller de devolución con la comunidad y pseudónimos cuidados.`,
+        tip: `En etnografía, la ética no es un trámite: es una relación continua.`,
+        ref: `Lincoln, Y. S., & Guba, E. G. (1985). Naturalistic inquiry. Sage.`
+      }
+    ]
+  },
+
+  hermeneutica: {
+    id: 'hermeneutica', icon: '◆', name: 'Hermenéutica',
+    focus: `Interpretar el significado profundo de textos, discursos, acciones o narrativas humanas.`,
+    ref: `Gadamer, H.-G. (2004). Truth and method (2nd rev. ed.). Continuum. (Obra original publicada en 1960).`,
+    steps: [
+      {
+        title: `Delimitar el objeto interpretable`,
+        desc: `La hermenéutica trabaja con textos, discursos, narrativas o acciones significativas. El objeto es siempre algo que pide ser interpretado.`,
+        questions: [`¿Qué texto, narrativa o corpus interpretarás?`, `¿Por qué ese corpus y no otro?`, `¿Qué significa "comprender" ese corpus para ti?`],
+        example: `Cartas de migrantes, narrativas de enfermedad, discursos presidenciales, diarios íntimos.`,
+        tip: `No todo es texto en sentido literal: una práctica también puede leerse como "texto social".`,
+        ref: `Ricoeur, P. (1981). Hermeneutics and the human sciences. Cambridge University Press.`
+      },
+      {
+        title: `Formular la pregunta hermenéutica`,
+        desc: `Preguntas del tipo: "¿Qué significa X en su contexto?", "¿Cómo se comprende X desde la tradición que lo produce?".`,
+        questions: [`¿Cómo formularías la pregunta en términos de significado?`, `¿Qué horizonte de sentido quieres comprender?`],
+        example: `"¿Qué significa la esperanza en las narrativas de pacientes oncológicos en contexto de cuidados paliativos?"`,
+        tip: `La pregunta hermenéutica no busca causas: busca sentido.`,
+        ref: `Gadamer, H.-G. (2004). Truth and method (2nd rev. ed.). Continuum.`
+      },
+      {
+        title: `Conceptos clave: círculo hermenéutico y horizonte`,
+        desc: `El círculo hermenéutico: comprender el todo desde las partes y las partes desde el todo. Horizonte: marco histórico-cultural desde el que interpretamos.`,
+        questions: [`¿Cuál es tu horizonte de comprensión como investigador?`, `¿Cómo dialogarás con el horizonte del texto?`],
+        example: `Comprender una narrativa: cada fragmento ilumina el conjunto y viceversa.`,
+        tip: `Reconoce tus prejuicios (en sentido gadameriano) como condiciones de comprensión, no como obstáculos.`,
+        ref: `Gadamer, H.-G. (2004). Truth and method (2nd rev. ed.). Continuum.`
+      },
+      {
+        title: `Construir y recolectar el corpus`,
+        desc: `Puede ser un corpus documental preexistente o producido (entrevistas narrativas). La selección del corpus es una decisión interpretativa.`,
+        questions: [`¿Qué corpus construirás y por qué?`, `¿Cómo justificarás su pertinencia?`],
+        example: `Entrevistas narrativas de 60 min con sobrevivientes de violencia política.`,
+        tip: `El corpus no es un "material neutral": su delimitación ya es una interpretación.`,
+        ref: `Ricoeur, P. (1981). Hermeneutics and the human sciences. Cambridge University Press.`
+      },
+      {
+        title: `Análisis: lectura iterativa y círculo`,
+        desc: `Lectura parte-todo-parte, identificación de temas, metáforas, silencios y horizontes.`,
+        questions: [`¿Qué temas emergen del corpus?`, `¿Qué metáforas o imágenes estructuran el relato?`, `¿Qué se dice y qué se silencia?`],
+        example: `Identificar la metáfora "el peso" como estructura del relato sobre cuidados.`,
+        tip: `El análisis hermenéutico es interpretativo, no codificatorio en sentido estricto: se mueve entre inmanencia y trascendencia.`,
+        ref: `Rennie, D. L. (2012). Qualitative research as methodical hermeneutics. Psychological Methods, 17(3), 385–398.`
+      },
+      {
+        title: `Interpretar: fusión de horizontes`,
+        desc: `La interpretación es un diálogo entre el horizonte del texto y el del intérprete. Comprender es fusionar horizontes.`,
+        questions: [`¿Cómo dialogan tu horizonte y el del texto?`, `¿Qué nuevas comprensiones emergen del encuentro?`],
+        example: `La esperanza no como optimismo, sino como práctica de sostenimiento mutuo.`,
+        tip: `La interpretación no es subjetiva: es dialógica y argumentada.`,
+        ref: `Gadamer, H.-G. (2004). Truth and method (2nd rev. ed.). Continuum.`
+      },
+      {
+        title: `Rigor y reporte`,
+        desc: `Reflexividad sobre prejuicios, coherencia interpretativa, plausibilidad y anclaje en el corpus.`,
+        questions: [`¿Cómo justificarás tu interpretación frente a otras posibles?`, `¿Cómo será tu escrito?`],
+        example: `Reporte que alterna fragmentos del corpus e interpretación argumentada.`,
+        tip: `Rennie propone tres criterios: coherencia, relación con la literatura y plausibilidad para los participantes.`,
+        ref: `Rennie, D. L. (2012). Qualitative research as methodical hermeneutics. Psychological Methods, 17(3), 385–398.`
+      }
+    ]
+  },
+
+  critica: {
+    id: 'critica', icon: '◆', name: 'Teoría Crítica',
+    focus: `Analizar relaciones de poder, ideología y dominación para promover la emancipación.`,
+    ref: `Kincheloe, J. L., & McLaren, P. (2005). Rethinking critical theory and qualitative research. In N. K. Denzin & Y. S. Lincoln (Eds.), The Sage handbook of qualitative research (3rd ed., pp. 303–342). Sage.`,
+    steps: [
+      {
+        title: `Delimitar el problema de poder`,
+        desc: `La teoría crítica parte de problemas vinculados con opresión, desigualdad, ideología o hegemonía.`,
+        questions: [`¿Qué relación de poder, opresión o desigualdad te interesa analizar?`, `¿Quiénes son los sujetos implicados?`],
+        example: `"Cómo se reproduce el racismo institucional en un servicio de salud público".`,
+        tip: `No toda desigualdad es crítica: debe haber un componente estructural e histórico.`,
+        ref: `Kincheloe, J. L., & McLaren, P. (2005). Rethinking critical theory and qualitative research. In N. K. Denzin & Y. S. Lincoln (Eds.), The Sage handbook of qualitative research (3rd ed., pp. 303–342). Sage.`
+      },
+      {
+        title: `Formular la pregunta crítica`,
+        desc: `Preguntas que buscan desnaturalizar: "¿Cómo se mantiene X?", "¿Cómo resisten los sujetos?", "¿A quién beneficia X?".`,
+        questions: [`¿Qué quieres desnaturalizar?`, `¿Qué prácticas de resistencia o agencia existen?`],
+        example: `"¿Cómo se manifiesta y resiste el racismo institucional en las prácticas cotidianas del personal de salud?"`,
+        tip: `Evita preguntas que solo describen: la teoría crítica busca transformar.`,
+        ref: `Freire, P. (1970). Pedagogía del oprimido. Siglo XXI.`
+      },
+      {
+        title: `Conceptos clave: ideología, hegemonía, praxis`,
+        desc: `Ideología (marxista y posmarxista), hegemonía (Gramsci), praxis, concientización (Freire), interseccionalidad.`,
+        questions: [`¿Cómo definirías hegemonía para tu estudio?`, `¿Qué papel juega la ideología en las prácticas que estudiarás?`],
+        example: `La hegemonía como sentido común que naturaliza la desigualdad.`,
+        tip: `Los conceptos críticos no son adornos: operan como lentes para leer los datos.`,
+        ref: `Freire, P. (1970). Pedagogía del oprimido. Siglo XXI.`
+      },
+      {
+        title: `Diseño: entrevistas críticas y análisis documental`,
+        desc: `Se combinan entrevistas, observación, análisis de documentos, medios e historias de vida para rastrear poder.`,
+        questions: [`¿Qué técnicas te permitirán ver el poder en acción?`, `¿Cómo triangularás fuentes?`],
+        example: `Entrevistas, análisis de protocolos institucionales y notas de campo.`,
+        tip: `Incluye documentos institucionales: el poder se materializa en textos.`,
+        ref: `Madison, D. S. (2012). Critical ethnography: Method, ethics, and performance (2nd ed.). Sage.`
+      },
+      {
+        title: `Análisis crítico del discurso y de prácticas`,
+        desc: `Deconstruir ideologías, leer síntomas, identificar cómo el poder produce subjetividades.`,
+        questions: [`¿Qué ideologías operan en los discursos?`, `¿Qué se naturaliza y qué se silencia?`],
+        example: `Identificar cómo el lenguaje institucional convierte al paciente en "caso".`,
+        tip: `El análisis crítico no es solo temático: busca contradicciones y ausencias.`,
+        ref: `Fairclough, N. (2013). Critical discourse analysis: The critical study of language (2nd ed.). Routledge.`
+      },
+      {
+        title: `Interpretar para la emancipación`,
+        desc: `Vincular hallazgos con estructuras sociales más amplias y con posibilidades de transformación.`,
+        questions: [`¿Cómo se conecta lo micro con lo macro?`, `¿Qué posibilidades de transformación se abren?`],
+        example: `"El racismo institucional no es un error individual: es una práctica estructurada que se reproduce en la formación."`,
+        tip: `La teoría crítica no busca neutralidad: busca justicia epistémica y social.`,
+        ref: `Kincheloe, J. L., & McLaren, P. (2005). Rethinking critical theory and qualitative research. In N. K. Denzin & Y. S. Lincoln (Eds.), The Sage handbook of qualitative research (3rd ed., pp. 303–342). Sage.`
+      },
+      {
+        title: `Rigor, reflexividad y reporte`,
+        desc: `Reflexividad sobre la posición del investigador y compromiso ético-político con los sujetos.`,
+        questions: [`¿Cuál es tu posición frente al problema?`, `¿Cómo evitarás la ventriloquía?`],
+        example: `Reporte que reconoce la voz de los sujetos y su capacidad de agencia.`,
+        tip: `Criterios: justicia epistémica, utilidad para la comunidad, coherencia crítica.`,
+        ref: `Denzin, N. K., & Lincoln, Y. S. (2018). The Sage handbook of qualitative research (5th ed.). Sage.`
+      }
+    ]
+  },
+
+  interaccionismo: {
+    id: 'interaccionismo', icon: '◆', name: 'Interaccionismo Simbólico',
+    focus: `Comprender cómo las personas construyen significados a través de la interacción social cotidiana.`,
+    ref: `Blumer, H. (1969). Symbolic interactionism: Perspective and method. University of California Press.`,
+    steps: [
+      {
+        title: `Delimitar el escenario de interacción`,
+        desc: `Se estudian situaciones de interacción cara a cara donde se producen significados: aulas, servicios, familias, grupos.`,
+        questions: [`¿Qué escenario de interacción te interesa?`, `¿Qué actores interactúan allí?`],
+        example: `Las interacciones entre residentes y pacientes en un hospital universitario.`,
+        tip: `Busca escenarios donde los significados sean visibles en la acción.`,
+        ref: `Blumer, H. (1969). Symbolic interactionism: Perspective and method. University of California Press.`
+      },
+      {
+        title: `Formular la pregunta sobre significados`,
+        desc: `Preguntas: "¿Cómo construyen X los actores?", "¿Qué definiciones de la situación operan aquí?".`,
+        questions: [`¿Qué significado quieres comprender?`, `¿Qué "definición de la situación" quieres reconstruir?`],
+        example: `"¿Cómo construyen los residentes su identidad profesional en la interacción con pacientes y colegas?"`,
+        tip: `La pregunta se centra en procesos, no en estados.`,
+        ref: `Blumer, H. (1969). Symbolic interactionism: Perspective and method. University of California Press.`
+      },
+      {
+        title: `Conceptos clave: self, símbolo, definición de la situación`,
+        desc: `Self (Mead), símbolo significante, definición de la situación (Thomas), rol, etiquetamiento (Becker).`,
+        questions: [`¿Cómo operan los símbolos en la interacción?`, `¿Cómo se negocia la definición de la situación?`],
+        example: `El bata blanca como símbolo que organiza expectativas mutuas.`,
+        tip: `Los significados son móviles: no están fijos en los objetos, se negocian.`,
+        ref: `Goffman, E. (1959). The presentation of self in everyday life. Doubleday.`
+      },
+      {
+        title: `Diseño: observación e interacción`,
+        desc: `Observación de interacciones, entrevistas en profundidad, análisis de conversaciones y narrativas identitarias.`,
+        questions: [`¿Cómo registrarás las interacciones?`, `¿Qué tipo de entrevistas usarás?`],
+        example: `Notas de campo sobre turnos de palabra, gestos y contextos.`,
+        tip: `Registra no solo lo dicho, también cómo se dice y en qué contexto.`,
+        ref: `Denzin, N. K. (2001). Interpretive interactionism (2nd ed.). Sage.`
+      },
+      {
+        title: `Análisis de significados en interacción`,
+        desc: `Identificar símbolos, roles, definiciones de la situación, procesos de etiquetamiento.`,
+        questions: [`¿Qué símbolos recurrentes aparecen?`, `¿Cómo se negocian los roles?`],
+        example: `"Ser llamado por el apellido produce distancia y jerarquía."`,
+        tip: `El contexto de la interacción es inseparable del significado.`,
+        ref: `Strauss, A. L. (1993). Continual permutations of action. Aldine de Gruyter.`
+      },
+      {
+        title: `Interpretar la construcción social de significados`,
+        desc: `Mostrar cómo los actores producen, reproducen y transforman significados en la interacción.`,
+        questions: [`¿Cómo se producen y transforman los significados en el tiempo?`, `¿Qué consecuencias tienen?`],
+        example: `"La identidad profesional se construye en la negociación diaria de roles."`,
+        tip: `La interpretación enfatiza procesos, no esencias.`,
+        ref: `Blumer, H. (1969). Symbolic interactionism: Perspective and method. University of California Press.`
+      },
+      {
+        title: `Rigor y reporte`,
+        desc: `Triangulación, member checking, contextualización de la interacción.`,
+        questions: [`¿Cómo validarás tus interpretaciones con los participantes?`, `¿Cómo contextualizarás los hallazgos?`],
+        example: `Devolución de interpretaciones a los participantes para validar significados.`,
+        tip: `Evita psicologizar: el foco es la interacción, no la mente individual.`,
+        ref: `Denzin, N. K. (2001). Interpretive interactionism (2nd ed.). Sage.`
+      }
+    ]
+  },
+
+  etnometodologia: {
+    id: 'etnometodologia', icon: '◆', name: 'Etnometodología',
+    focus: `Analizar cómo los actores producen y reproducen el orden social en la vida cotidiana.`,
+    ref: `Garfinkel, H. (1967). Studies in ethnomethodology. Prentice-Hall.`,
+    steps: [
+      {
+        title: `Delimitar prácticas cotidianas`,
+        desc: `Se estudian prácticas rutinarias donde se produce el orden social: conversaciones, colas, reuniones, clases.`,
+        questions: [`¿Qué práctica cotidiana te interesa?`, `¿Cómo se produce allí el orden social?`],
+        example: `Cómo se organizan los turnos de palabra en una reunión de equipo clínico.`,
+        tip: `Lo obvio es lo más interesante: la etnometodología extraña lo cotidiano.`,
+        ref: `Garfinkel, H. (1967). Studies in ethnomethodology. Prentice-Hall.`
+      },
+      {
+        title: `Formular la pregunta sobre métodos prácticos`,
+        desc: `Preguntas: "¿Cómo producen los actores X en la interacción?", "¿Qué métodos prácticos usan?".`,
+        questions: [`¿Qué métodos usan los actores para hacer reconocible su acción?`, `¿Cómo logran inteligibilidad mutua?`],
+        example: `"¿Cómo producen los docentes el orden en el aula minuto a minuto?"`,
+        tip: `La pregunta no busca causas: busca cómo se hace en la práctica.`,
+        ref: `Garfinkel, H. (1967). Studies in ethnomethodology. Prentice-Hall.`
+      },
+      {
+        title: `Conceptos clave: indexicalidad, reflexividad, accountability`,
+        desc: `Indexicalidad (el significado depende del contexto), reflexividad, accountability (hacerse accountable).`,
+        questions: [`¿Cómo se manifiesta la indexicalidad en tu corpus?`, `¿Cómo se hacen accountable los actores?`],
+        example: `"Lo que decimos adquiere sentido solo en la situación concreta."`,
+        tip: `Estos conceptos no son categorías de análisis previas: son sensibilizadores.`,
+        ref: `Heritage, J. (1984). Garfinkel and ethnomethodology. Polity Press.`
+      },
+      {
+        title: `Diseño: grabaciones y observación naturalista`,
+        desc: `Grabaciones de audio y video, transcripciones detalladas, observación naturalista.`,
+        questions: [`¿Qué grabarás y cómo?`, `¿Cómo transcribirás detalles no verbales?`],
+        example: `Grabación de reuniones y transcripción con convenciones de análisis conversacional.`,
+        tip: `La calidad de la transcripción es clave: incluye pausas, solapamientos, énfasis.`,
+        ref: `Sacks, H., Schegloff, E. A., & Jefferson, G. (1974). A simplest systematics for the organization of turn-taking for conversation. Language, 50(4), 696–735.`
+      },
+      {
+        title: `Análisis de la interacción`,
+        desc: `Análisis conversacional y análisis de la acción práctica: cómo se producen turnos, secuencias, reparaciones.`,
+        questions: [`¿Qué patrones secuenciales emergen?`, `¿Cómo se reparan malentendidos?`],
+        example: `"El turno se cede con una micro-pausa que el interlocutor interpreta como cierre."`,
+        tip: `Trabaja con fragmentos pequeños en detalle: la fuerza está en la minucia.`,
+        ref: `Sacks, H., Schegloff, E. A., & Jefferson, G. (1974). A simplest systematics for the organization of turn-taking for conversation. Language, 50(4), 696–735.`
+      },
+      {
+        title: `Interpretar la producción del orden`,
+        desc: `Mostrar cómo los actores, en tiempo real, producen y reproducen el orden social que luego parece natural.`,
+        questions: [`¿Cómo producen los actores el orden que observamos?`, `¿Qué hacen para que la interacción funcione?`],
+        example: `"El orden no está dado: se logra en cada turno de habla."`,
+        tip: `Evita explicaciones psicológicas: el foco es la práctica observable.`,
+        ref: `Garfinkel, H. (1967). Studies in ethnomethodology. Prentice-Hall.`
+      },
+      {
+        title: `Rigor y reporte`,
+        desc: `Análisis detallado de transcripciones, reflexividad sobre la posición, transparencia del corpus.`,
+        questions: [`¿Cómo justificarás cada interpretación con fragmentos?`, `¿Cómo documentarás tu proceso?`],
+        example: `Reporte con transcripciones comentadas y argumentación paso a paso.`,
+        tip: `La validez en etnometodología es interna al análisis: se sostiene en la evidencia del fragmento.`,
+        ref: `Heritage, J. (1984). Garfinkel and ethnomethodology. Polity Press.`
+      }
+    ]
+  },
+
+  discurso: {
+    id: 'discurso', icon: '◆', name: 'Análisis del Discurso Foucaultiano',
+    focus: `Examinar cómo el discurso produce realidad, subjetividades y regímenes de verdad.`,
+    ref: `Foucault, M. (1972). The archaeology of knowledge (A. M. Sheridan Smith, Trans.). Pantheon. (Obra original publicada en 1969).`,
+    steps: [
+      {
+        title: `Delimitar el corpus discursivo`,
+        desc: `Se trabaja con corpus de textos: políticas, medios, entrevistas, documentos institucionales, redes sociales.`,
+        questions: [`¿Qué corpus discursivo analizarás?`, `¿En qué contexto histórico-institucional circula?`],
+        example: `Políticas públicas de salud mental entre 2010 y 2024, más notas de prensa.`,
+        tip: `El corpus debe permitir ver regularidades, no solo casos aislados.`,
+        ref: `Foucault, M. (1972). The archaeology of knowledge. Pantheon.`
+      },
+      {
+        title: `Formular la pregunta discursiva`,
+        desc: `Preguntas: "¿Cómo se produce X como régimen de verdad?", "¿Qué subjetividades produce este discurso?".`,
+        questions: [`¿Qué objeto quieres mostrar como producido discursivamente?`, `¿Qué sujetos produce ese discurso?`],
+        example: `"¿Cómo se produce la noción de 'paciente experto' en las políticas de salud mental?"`,
+        tip: `No busques la verdad detrás del discurso: analiza cómo el discurso produce efectos de verdad.`,
+        ref: `Foucault, M. (1972). The archaeology of knowledge. Pantheon.`
+      },
+      {
+        title: `Conceptos clave: formación discursiva, poder-saber`,
+        desc: `Formación discursiva, enunciado, archivo, poder-saber, gubernamentalidad, biopoder.`,
+        questions: [`¿Qué regularidades aparecen entre enunciados?`, `¿Qué poder-saber se articula?`],
+        example: `La prevención como dispositivo que desplaza la responsabilidad al sujeto.`,
+        tip: `Los conceptos foucaultianos son herramientas para pensar, no etiquetas para aplicar.`,
+        ref: `Foucault, M. (1990). The history of sexuality, Vol. 1: An introduction (R. Hurley, Trans.). Vintage. (Obra original publicada en 1976).`
+      },
+      {
+        title: `Diseño: construcción del archivo`,
+        desc: `Selección cuidadosa del corpus, contextualización histórica, justificación de inclusiones y exclusiones.`,
+        questions: [`¿Cómo justificarás los límites del corpus?`, `¿Qué período y qué fuentes?`],
+        example: `Políticas, protocolos y prensa como corpus triangulado.`,
+        tip: `El archivo es una construcción del investigador y debe ser argumentado.`,
+        ref: `Arribas-Ayllon, M., & Walkerdine, V. (2008). Foucauldian discourse analysis. In C. Willig & W. Stainton-Rogers (Eds.), The Sage handbook of qualitative research in psychology (pp. 91–108). Sage.`
+      },
+      {
+        title: `Análisis: enunciados y regularidades`,
+        desc: `Identificación de enunciados, regularidades, formaciones discursivas y condiciones de emergencia.`,
+        questions: [`¿Qué enunciados se repiten?`, `¿Qué reglas permiten que ciertos enunciados aparezcan y otros no?`],
+        example: `El enunciado "el usuario es responsable de su salud" se repite con variaciones.`,
+        tip: `Trabaja con regularidades, no con temas: los temas son un efecto del discurso.`,
+        ref: `Arribas-Ayllon, M., & Walkerdine, V. (2008). Foucauldian discourse analysis. In C. Willig & W. Stainton-Rogers (Eds.), The Sage handbook of qualitative research in psychology (pp. 91–108). Sage.`
+      },
+      {
+        title: `Interpretar los efectos del discurso`,
+        desc: `Mostrar cómo el discurso produce objetos, sujetos y verdades, y qué efectos tiene sobre las prácticas.`,
+        questions: [`¿Qué subjetividades produce este discurso?`, `¿Qué prácticas habilita o clausura?`],
+        example: `"El 'paciente experto' produce un sujeto autogestionado que debe hacerse responsable de su salud."`,
+        tip: `El análisis foucaultiano es histórico y crítico: vincula el discurso con relaciones de poder.`,
+        ref: `Foucault, M. (1972). The archaeology of knowledge. Pantheon.`
+      },
+      {
+        title: `Rigor y reporte`,
+        desc: `Transparencia del corpus, contextualización histórica, reflexividad.`,
+        questions: [`¿Cómo justificarás cada formación discursiva?`, `¿Cómo contextualizarás históricamente?`],
+        example: `Reporte con fragmentos, contextualización y argumentación.`,
+        tip: `Willig propone criterios: coherencia, plausibilidad, anclaje en el corpus y sensibilidad al contexto.`,
+        ref: `Willig, C. (2013). Introducing qualitative research in psychology (3rd ed.). Open University Press.`
+      }
+    ]
+  },
+
+  estudioCaso: {
+    id: 'estudioCaso', icon: '◆', name: 'Estudio de Caso',
+    focus: `Investigar en profundidad un fenómeno contemporáneo en su contexto real, con múltiples fuentes.`,
+    ref: `Yin, R. K. (2018). Case study research and applications: Design and methods (6th ed.). Sage.`,
+    steps: [
+      {
+        title: `Delimitar el caso y su contexto`,
+        desc: `Un caso es un sistema acotado: una persona, un programa, una institución, un evento. Debe estar delimitado y contextualizado.`,
+        questions: [`¿Qué constituye tu caso?`, `¿Cuáles son sus límites (temporales, espaciales, institucionales)?`, `¿Por qué es un caso relevante?`],
+        example: `La implementación del programa "Aprender en Casa" en una escuela rural entre 2020 y 2022.`,
+        tip: `Si no puedes delimitar los límites del caso, probablemente no es un caso.`,
+        ref: `Stake, R. E. (1995). The art of case study research. Sage.`
+      },
+      {
+        title: `Formular la pregunta del caso`,
+        desc: `Preguntas típicas: "¿Cómo...?" y "¿Por qué...?". El estudio de caso responde a cómo y por qué de un fenómeno contemporáneo.`,
+        questions: [`¿Qué "cómo" o "por qué" quieres responder?`, `¿Qué proposición teórica orienta el estudio?`],
+        example: `"¿Cómo se implementó el programa y por qué tuvo los resultados observados?"`,
+        tip: `Define una proposición teórica inicial: orienta la recolección aunque pueda revisarse.`,
+        ref: `Yin, R. K. (2018). Case study research and applications: Design and methods (6th ed.). Sage.`
+      },
+      {
+        title: `Conceptos clave: caso, contexto, triangulación`,
+        desc: `El caso está siempre incrustado en su contexto. La triangulación es condición de validez.`,
+        questions: [`¿Cómo se relaciona el caso con su contexto?`, `¿Qué fuentes triangularás?`],
+        example: `Entrevistas, documentos, observación, archivos.`,
+        tip: `El estudio de caso no busca representatividad estadística, sino profundidad.`,
+        ref: `Stake, R. E. (1995). The art of case study research. Sage.`
+      },
+      {
+        title: `Diseño: cadena de evidencia`,
+        desc: `Múltiples fuentes, cadena de evidencia, protocolo de estudio de caso.`,
+        questions: [`¿Qué fuentes usarás y en qué orden?`, `¿Cómo registrarás la cadena de evidencia?`],
+        example: `Protocolo con preguntas, fuentes, procedimientos y cronograma.`,
+        tip: `La cadena de evidencia permite que otro investigador siga tu razonamiento.`,
+        ref: `Yin, R. K. (2018). Case study research and applications: Design and methods (6th ed.). Sage.`
+      },
+      {
+        title: `Análisis: correspondencia de patrones`,
+        desc: `Análisis temático intra-caso, correspondencia de patrones, construcción de explicación, análisis de series temporales.`,
+        questions: [`¿Qué patrones emergen dentro del caso?`, `¿Cómo se relacionan con la proposición teórica?`],
+        example: `Comparar el patrón esperado con el observado y explicar las divergencias.`,
+        tip: `El análisis puede ser deductivo, inductivo o una combinación.`,
+        ref: `Yin, R. K. (2018). Case study research and applications: Design and methods (6th ed.). Sage.`
+      },
+      {
+        title: `Interpretar y generalizar analíticamente`,
+        desc: `La interpretación busca comprensión profunda del caso y generalización analítica (no estadística) hacia la teoría.`,
+        questions: [`¿Qué enseña este caso sobre la teoría?`, `¿Qué se puede transferir a otros contextos?`],
+        example: `"Este caso muestra cómo las políticas educativas se recontextualizan en la práctica local."`,
+        tip: `Generalización analítica: el caso dialoga con la teoría, no con una población.`,
+        ref: `Stake, R. E. (1995). The art of case study research. Sage.`
+      },
+      {
+        title: `Rigor y reporte`,
+        desc: `Triangulación, validez de constructo, validez interna y externa, confiabilidad.`,
+        questions: [`¿Cómo garantizarás la validez de constructo?`, `¿Cómo reportarás el caso?`],
+        example: `Reporte organizado por temas o cronológicamente, con evidencia.`,
+        tip: `Yin propone cuatro pruebas: constructo, interna, externa y confiabilidad.`,
+        ref: `Yin, R. K. (2018). Case study research and applications: Design and methods (6th ed.). Sage.`
+      }
+    ]
+  },
+
+  iap: {
+    id: 'iap', icon: '◆', name: 'Investigación Acción Participativa',
+    focus: `Investigar con la comunidad para transformar la realidad y empoderar a los participantes.`,
+    ref: `Fals Borda, O. (1979). El problema de cómo investigar la realidad para transformarla. Ediciones Tercer Mundo.`,
+    steps: [
+      {
+        title: `Delimitar el problema sentido por la comunidad`,
+        desc: `El problema no lo define solo el investigador: emerge del diálogo con la comunidad.`,
+        questions: [`¿Qué problema siente la comunidad como propio?`, `¿Quiénes participarán?`],
+        example: `Contaminación de un río por una empresa en una comunidad ribereña.`,
+        tip: `La IAP no es investigar sobre la comunidad: es investigar con ella.`,
+        ref: `Fals Borda, O. (1979). El problema de cómo investigar la realidad para transformarla. Ediciones Tercer Mundo.`
+      },
+      {
+        title: `Construir la pregunta de forma colaborativa`,
+        desc: `La pregunta se co-construye con la comunidad y puede reformularse durante el proceso.`,
+        questions: [`¿Cómo formular la pregunta con la comunidad?`, `¿Qué quieren transformar?`],
+        example: `"¿Cómo podemos reducir la contaminación del río y fortalecer el cuidado comunitario del agua?"`,
+        tip: `La pregunta es a la vez cognitiva y política: busca conocer y transformar.`,
+        ref: `Freire, P. (1970). Pedagogía del oprimido. Siglo XXI.`
+      },
+      {
+        title: `Conceptos clave: participación, praxis, concientización`,
+        desc: `Participación real, praxis (acción-reflexión), concientización, devolución sistemática.`,
+        questions: [`¿Qué significa participación real en tu proyecto?`, `¿Cómo integrarás la devolución sistemática?`],
+        example: `Asambleas periódicas donde se devuelven y discuten los hallazgos.`,
+        tip: `La participación no es consulta: es co-decisión.`,
+        ref: `Freire, P. (1970). Pedagogía del oprimido. Siglo XXI.`
+      },
+      {
+        title: `Diseño participativo de la recolección`,
+        desc: `Talleres, photovoice, teatro foro, entrevistas colectivas, cartografía social.`,
+        questions: [`¿Qué técnicas participativas usarás?`, `¿Cómo registrarás el proceso?`],
+        example: `Photovoice: la comunidad fotografía su entorno y discute las imágenes.`,
+        tip: `Las técnicas deben ser accesibles y significativas para la comunidad.`,
+        ref: `Wang, C., & Burris, M. A. (1997). Photovoice: Concept, methodology, and use for participatory needs assessment. Health Education & Behavior, 24(3), 369–387.`
+      },
+      {
+        title: `Análisis colectivo y validación comunitaria`,
+        desc: `Codificación participativa, validación con la comunidad, co-interpretación.`,
+        questions: [`¿Cómo integrarás a la comunidad en el análisis?`, `¿Cómo validarás los hallazgos?`],
+        example: `Taller de codificación colectiva con tarjetas y categorías emergentes.`,
+        tip: `La comunidad no es objeto del análisis: es co-analista.`,
+        ref: `Fernández, J. S., & Fine, M. (2025). Methodological retrospective: Critical participatory action research. Qualitative Psychology, 12(3), 377–394.`
+      },
+      {
+        title: `Interpretar para la acción`,
+        desc: `La interpretación se orienta a la acción transformadora. Se articulan hallazgos con planes de acción.`,
+        questions: [`¿Qué acciones se derivan del análisis?`, `¿Cómo evaluarán el cambio?`],
+        example: `Plan de monitoreo comunitario del agua con indicadores acordados.`,
+        tip: `La validez en IAP es también política: ¿transformó algo?`,
+        ref: `Fals Borda, O. (1979). El problema de cómo investigar la realidad para transformarla. Ediciones Tercer Mundo.`
+      },
+      {
+        title: `Rigor y reporte`,
+        desc: `Criterios: utilidad, justicia epistémica, transformación, sostenibilidad.`,
+        questions: [`¿Cómo documentarás el proceso?`, `¿Cómo reportarás de forma accesible?`],
+        example: `Reporte en formatos múltiples: informe, cartilla, video, mural.`,
+        tip: `La IAP no busca publicar solo en revistas: busca devolver a la comunidad.`,
+        ref: `Fernández, J. S., & Fine, M. (2025). Methodological retrospective: Critical participatory action research. Qualitative Psychology, 12(3), 377–394.`
+      }
+    ]
+  }
+};
+
+/* ============================================================
+   ESTADO
+   ============================================================ */
+const state = {
+  theoryId: null,
+  currentStep: 0,
+  answers: {}
+};
+
+const STORAGE_KEY = 'lab_cualitativo_v3';
+
+/* ============================================================
+   PERSISTENCIA
+   ============================================================ */
+function saveToStorage() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+}
+function loadFromStorage() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (parsed && parsed.theoryId && THEORIES[parsed.theoryId]) return parsed;
+    return null;
+  } catch (e) { return null; }
+}
+
+/* ============================================================
+   UTILIDADES
+   ============================================================ */
+function escapeHtml(str) {
+  const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+  return String(str).replace(/[&<>"']/g, function (c) { return map[c]; });
+}
+function $(id) { return document.getElementById(id); }
+
+/* ============================================================
+   VISTAS
+   ============================================================ */
+function showView(view) {
+  $('selectionView').classList.toggle('hidden', view !== 'selection');
+  $('wizardView').classList.toggle('hidden', view !== 'wizard');
+  $('reportView').classList.toggle('hidden', view !== 'report');
+}
+
+/* ============================================================
+   GRID DE TEORÍAS
+   ============================================================ */
+function renderTheoryGrid() {
+  const grid = $('theoryGrid');
+  const ids = Object.keys(THEORIES);
+  let html = '';
+  for (let i = 0; i < ids.length; i++) {
+    const t = THEORIES[ids[i]];
+    html += '<div class="theory-tile" onclick="selectTheory(\'' + t.id + '\')">';
+    html += '<div class="icon">' + t.icon + '</div>';
+    html += '<h3>' + escapeHtml(t.name) + '</h3>';
+    html += '<p>' + escapeHtml(t.focus) + '</p>';
+    html += '<div class="ref">' + escapeHtml(t.ref) + '</div>';
+    html += '</div>';
+  }
+  grid.innerHTML = html;
+}
+
+/* ============================================================
+   SELECCIÓN Y NAVEGACIÓN
+   ============================================================ */
+function selectTheory(id) {
+  if (!THEORIES[id]) { alert('Teoría no encontrada: ' + id); return; }
+  state.theoryId = id;
+  state.currentStep = 0;
+  state.answers = {};
+  const theory = THEORIES[id];
+  $('sbIcon').textContent = theory.icon;
+  $('sbName').textContent = theory.name;
+  saveToStorage();
+  renderStep();
+  showView('wizard');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function changeTheory() {
+  if (confirm('¿Cambiar de teoría? Se perderán las notas que hayas escrito.')) {
+    state.theoryId = null;
+    state.currentStep = 0;
+    state.answers = {};
+    saveToStorage();
+    showView('selection');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}
+
+function resetAll() {
+  if (confirm('¿Reiniciar el laboratorio? Se perderán todas las notas.')) {
+    state.theoryId = null;
+    state.currentStep = 0;
+    state.answers = {};
+    try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+    showView('selection');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}
+
+function backToWizard() {
+  if (!state.theoryId) showView('selection');
+  else showView('wizard');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ============================================================
+   RENDER: PASO ACTUAL
+   ============================================================ */
+function renderStep() {
+  if (!state.theoryId || !THEORIES[state.theoryId]) {
+    showView('selection');
+    return;
+  }
+  const theory = THEORIES[state.theoryId];
+  const total = theory.steps.length;
+
+  if (state.currentStep < 0) state.currentStep = 0;
+  if (state.currentStep >= total) state.currentStep = total - 1;
+
+  const step = theory.steps[state.currentStep];
+  if (!step) return;
+
+  $('stepTitle').textContent = step.title;
+  $('stepDesc').textContent = step.desc;
+
+  const ulQ = $('stepQuestions');
+  ulQ.innerHTML = '';
+  if (Array.isArray(step.questions)) {
+    for (let i = 0; i < step.questions.length; i++) {
+      const li = document.createElement('li');
+      li.textContent = step.questions[i];
+      ulQ.appendChild(li);
+    }
+  }
+
+  $('stepExample').textContent = step.example;
+  $('stepTip').textContent = step.tip;
+  $('stepRef').textContent = step.ref;
+
+  const pct = Math.round((state.currentStep / total) * 100);
+  $('progressFill').style.width = pct + '%';
+  $('progressStep').textContent = 'Paso ' + (state.currentStep + 1) + ' de ' + total;
+  $('progressPct').textContent = pct + '% completado';
+
+  $('notesArea').value = state.answers[state.currentStep] || '';
+
+  $('btnPrev').disabled = state.currentStep === 0;
+  const btnNext = $('btnNext');
+  if (state.currentStep === total - 1) {
+    btnNext.textContent = 'Generar reporte';
+    btnNext.classList.remove('btn-primary');
+    btnNext.classList.add('btn-accent');
+  } else {
+    btnNext.textContent = 'Siguiente';
+    btnNext.classList.add('btn-primary');
+    btnNext.classList.remove('btn-accent');
+  }
+
+  renderStepList();
+}
+
+/* ============================================================
+   RENDER: LISTA DE PASOS
+   ============================================================ */
+function renderStepList() {
+  if (!state.theoryId || !THEORIES[state.theoryId]) return;
+  const theory = THEORIES[state.theoryId];
+  const ol = $('stepList');
+  let html = '';
+  for (let i = 0; i < theory.steps.length; i++) {
+    const s = theory.steps[i];
+    const val = state.answers[i];
+    const done = val && String(val).trim().length > 0;
+    const active = i === state.currentStep;
+    let cls = '';
+    if (active) cls = 'active';
+    else if (done) cls = 'done';
+    const numLabel = (done && !active) ? '✓' : String(i + 1);
+    html += '<li class="' + cls + '" onclick="goToStep(' + i + ')">';
+    html += '<span class="num">' + numLabel + '</span>';
+    html += '<span>' + escapeHtml(s.title) + '</span>';
+    html += '</li>';
+  }
+  ol.innerHTML = html;
+}
+
+/* ============================================================
+   NAVEGACIÓN
+   ============================================================ */
+function saveCurrentAnswer() {
+  if (!state.theoryId) return;
+  state.answers[state.currentStep] = $('notesArea').value;
+  saveToStorage();
+}
+
+function nextStep() {
+  saveCurrentAnswer();
+  const total = THEORIES[state.theoryId].steps.length;
+  if (state.currentStep === total - 1) {
+    generateReport();
+  } else {
+    state.currentStep++;
+    saveToStorage();
+    renderStep();
+    const panel = document.querySelector('.panel');
+    if (panel && panel.scrollIntoView) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+function prevStep() {
+  saveCurrentAnswer();
+  if (state.currentStep > 0) {
+    state.currentStep--;
+    saveToStorage();
+    renderStep();
+    const panel = document.querySelector('.panel');
+    if (panel && panel.scrollIntoView) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+function goToStep(i) {
+  saveCurrentAnswer();
+  state.currentStep = i;
+  saveToStorage();
+  renderStep();
+}
+
+/* ============================================================
+   REPORTE
+   ============================================================ */
+function generateReport() {
+  saveCurrentAnswer();
+  const theory = THEORIES[state.theoryId];
+  if (!theory) return;
+
+  const fecha = new Date().toLocaleDateString('es-MX', { year: 'numeric', month: 'long', day: 'numeric' });
+  $('reportMeta').textContent = theory.name + ' · ' + theory.steps.length + ' pasos · Generado el ' + fecha;
+
+  const hasAnyAnswer = Object.keys(state.answers).some(function (k) {
+    const v = state.answers[k];
+    return v && String(v).trim().length > 0;
+  });
+
+  let html = '';
+  if (!hasAnyAnswer) {
+    html += '<div class="report-empty-banner">Aún no has escrito ninguna nota. Este reporte incluirá el andamiaje teórico-metodológico, pero sin tus elaboraciones. Vuelve al laboratorio y completa al menos algunos pasos.</div>';
+  }
+
+  html += '<div class="report-section">';
+  html += '<h3>Marco teórico-metodológico</h3>';
+  html += '<p style="font-size:1rem;margin-bottom:1rem;line-height:1.6;"><strong>' + escapeHtml(theory.name) + '.</strong> ' + escapeHtml(theory.focus) + '</p>';
+  html += '<div class="ref-line">' + escapeHtml(theory.ref) + '</div>';
+  html += '</div>';
+
+  for (let i = 0; i < theory.steps.length; i++) {
+    const step = theory.steps[i];
+    const rawAns = state.answers[i];
+    const ans = rawAns ? String(rawAns).trim() : '';
+    const empty = ans.length === 0;
+    html += '<div class="report-section">';
+    html += '<h3>' + (i + 1) + '. ' + escapeHtml(step.title) + '</h3>';
+    if (empty) {
+      html += '<div class="user-text empty">Sin elaboración registrada en este paso</div>';
+    } else {
+      html += '<div class="user-text">' + escapeHtml(ans) + '</div>';
+    }
+    html += '<div class="ref-line">' + escapeHtml(step.ref) + '</div>';
+    html += '</div>';
+  }
+
+  html += '<div class="report-section" style="border-left:3px solid var(--blue);">';
+  html += '<h3>Nota final sobre el proceso interpretativo</h3>';
+  html += '<p style="font-size:1rem;line-height:1.65;">Este reporte es un <strong>borrador de trabajo</strong>. El análisis cualitativo es iterativo: vuelve a los pasos, reformula tus notas, contrasta con la literatura y con los participantes. El rigor en investigación cualitativa se sostiene en la transparencia del proceso, la reflexividad del investigador y la coherencia entre teoría, método y datos.</p>';
+  html += '<div class="ref-line" style="margin-top:1rem;">Lincoln, Y. S., &amp; Guba, E. G. (1985). Naturalistic inquiry. Sage.</div>';
+  html += '</div>';
+
+  $('reportBody').innerHTML = html;
+  showView('report');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function copyReport() {
+  const theory = THEORIES[state.theoryId];
+  if (!theory) return;
+
+  let text = 'REPORTE INTERPRETATIVO — ' + theory.name + '\n';
+  text += theory.focus + '\n';
+  text += 'Referencia: ' + theory.ref + '\n\n';
+
+  for (let i = 0; i < theory.steps.length; i++) {
+    const step = theory.steps[i];
+    const ans = state.answers[i] ? String(state.answers[i]).trim() : '';
+    text += (i + 1) + '. ' + step.title + '\n';
+    text += '   Referencia: ' + step.ref + '\n';
+    text += '   Notas: ' + (ans || '(sin elaboración)') + '\n\n';
+  }
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(function () {
+      alert('Reporte copiado al portapapeles.');
+    }).catch(function () { fallbackCopy(text); });
+  } else {
+    fallbackCopy(text);
+  }
+}
+
+function fallbackCopy(text) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.select();
+  try {
+    document.execCommand('copy');
+    alert('Reporte copiado al portapapeles.');
+  } catch (e) {
+    alert('No se pudo copiar automáticamente. Selecciona y copia manualmente.');
+  }
+  document.body.removeChild(ta);
+}
+
+/* ============================================================
+   INICIALIZACIÓN
+   ============================================================ */
+document.addEventListener('DOMContentLoaded', function () {
+  renderTheoryGrid();
+
+  const saved = loadFromStorage();
+  if (saved) {
+    const proceed = confirm('Se encontró una sesión previa (' + THEORIES[saved.theoryId].name + '). ¿Deseas continuar donde la dejaste?');
+    if (proceed) {
+      state.theoryId = saved.theoryId;
+      state.currentStep = saved.currentStep || 0;
+      state.answers = saved.answers || {};
+      const theory = THEORIES[state.theoryId];
+      $('sbIcon').textContent = theory.icon;
+      $('sbName').textContent = theory.name;
+      renderStep();
+      showView('wizard');
+      return;
+    } else {
+      try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+    }
+  }
+
+  const ta = $('notesArea');
+  if (ta) {
+    ta.addEventListener('input', function () {
+      if (!state.theoryId) return;
+      state.answers[state.currentStep] = ta.value;
+      saveToStorage();
+      renderStepList();
+    });
+    ta.addEventListener('keydown', function (e) {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+        e.preventDefault();
+        nextStep();
+      }
+    });
+  }
+});
+</script>
+
+</body>
+</html>
